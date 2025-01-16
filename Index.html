@@ -3,33 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система Авторизации</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Проверка времени</title>
 </head>
 <body>
-    <div id="auth-status"></div>
-    <div id="auth-forms">
-        <div id="login-form" class="form-container hidden">
-            <h2>Вход</h2>
-            <input type="text" id="login-username" placeholder="Логин" required>
-            <input type="password" id="login-password" placeholder="Пароль" required>
-            <button id="login-btn">Войти</button>
-            <div id="login-error" class="error-message"></div>
-        </div>
+    <button id="save-time-btn">Сохранить текущее время</button>
+    <div id="message"></div>
 
-        <div id="register-form" class="form-container hidden">
-            <h2>Регистрация</h2>
-            <input type="text" id="register-username" placeholder="Логин" required>
-            <input type="password" id="register-password" placeholder="Пароль" required>
-            <input type="password" id="register-password-confirm" placeholder="Повторите пароль" required>
-            <button id="register-btn">Зарегистрироваться</button>
-            <div id="register-error" class="error-message"></div>
-        </div>
+    <script>
+        // Функция для сохранения текущего времени в локальное хранилище
+        function saveCurrentTime() {
+            const currentTime = new Date().getTime(); // Получаем текущее время в миллисекундах
+            localStorage.setItem('savedTime', currentTime); // Сохраняем время в локальное хранилище
+            document.getElementById('message').innerText = 'Текущее время сохранено!';
+        }
 
-        <button id="toggle-form-btn">Зарегистрироваться</button>
-        <button id="logout-btn" class="hidden">Выйти</button>
-    </div>
+        // Функция для проверки, прошло ли полчаса
+        function checkTimePassed() {
+            const savedTime = localStorage.getItem('savedTime'); // Получаем сохраненное время
+            if (savedTime) {
+                const currentTime = new Date().getTime();
+                const timePassed = currentTime - savedTime; // Вычисляем разницу во времени
 
-    <script src="script.js"></script>
+                // Проверяем, прошло ли 30 минут (30 минут = 1800000 миллисекунд)
+                if (timePassed >= 1800000) {
+                    document.getElementById('message').innerText = 'Прошло полчаса с момента сохранения времени.';
+                } else {
+                    document.getElementById('message').innerText = 'Еще не прошло полчаса.';
+                }
+            } else {
+                document.getElementById('message').innerText = 'Время не было сохранено.';
+            }
+        }
+
+        // Назначаем обработчик события на кнопку
+        document.getElementById('save-time-btn').addEventListener('click', saveCurrentTime);
+
+        // Проверяем время при загрузке страницы
+        window.onload = checkTimePassed;
+    </script>
 </body>
 </html>
